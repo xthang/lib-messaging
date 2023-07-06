@@ -1,0 +1,126 @@
+plugins {
+	id 'com.android.library' // version '7.0.0'
+	id 'maven-publish'
+	id 'signing'
+}
+
+// archivesBaseName = "lib-messaging-android"
+// version          = version_number
+// group            = group_info
+
+repositories {
+	google()
+	mavenCentral()
+	mavenLocal()
+}
+
+android {
+	namespace 'lib.messaging'
+
+	compileSdkVersion 33
+//	buildToolsVersion '30.0.2'
+	ndkVersion '25.2.9519653'
+
+	defaultConfig {
+		minSdkVersion 21
+		targetSdkVersion 33
+		multiDexEnabled true
+		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+	}
+
+	compileOptions {
+		coreLibraryDesugaringEnabled true
+		sourceCompatibility JavaVersion.VERSION_1_8
+		targetCompatibility JavaVersion.VERSION_1_8
+	}
+
+	sourceSets {
+		androidTest {
+			java {
+				// Also run all the Android-agnostic tests by default.
+				srcDirs = ['../client/src/test/java']
+			}
+			resources {
+				srcDirs = ['../client/src/test/resources']
+			}
+		}
+	}
+}
+
+dependencies {
+	androidTestImplementation "androidx.test:runner:1.5.2"
+	androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+	api project(':lib-messaging-client')
+}
+
+tasks.register('libsWithDebugSymbols', Zip) {
+	from 'src/main/jniLibs'
+	classifier 'debug-symbols'
+}
+
+preBuild {
+	dependsOn 'makeJniLibraries'
+}
+
+task makeJniLibraries(type: Exec) {
+	group 'Rust'
+	description 'Build the JNI libraries'
+
+	// Explicitly specify 'bash' for Windows compatibility.
+	commandLine 'bash', '../build_jni.sh', 'android'
+	environment 'ANDROID_NDK_HOME', android.ndkDirectory
+}
+
+// MARK: Publication
+afterEvaluate {
+	publishing {
+//		publications {
+//			mavenJava(MavenPublication) {
+//				artifactId = archivesBaseName
+//				from components.release
+//				artifact libsWithDebugSymbols
+//
+//				pom {
+//					name = archivesBaseName
+//					packaging = 'aar'
+//					description = 'Ready Messaging Protocol cryptography library for Android'
+//					url = 'https://github.com/ready.io/lib-messaging'
+//
+//					scm {
+//						url = 'scm:git@github.com:ready.io/lib-messaging.git'
+//						connection = 'scm:git@github.com:ready.io/lib-messaging.git'
+//						developerConnection = 'scm:git@github.com:ready.io/lib-messaging.git'
+//					}
+//
+//					licenses {
+//						license {
+//							name = 'AGPLv3'
+//							url = 'https://www.gnu.org/licenses/agpl-3.0.txt'
+//						}
+//					}
+//
+//					developers {
+//						developer {
+//							name = 'Ready.io'
+//						}
+//					}
+//				}
+//			}
+//		}
+//		repositories {
+//			maven {
+//				url = getReleaseRepositoryUrl()
+//				credentials {
+//					username = getRepositoryUsername()
+//					password = getRepositoryPassword()
+//				}
+//			}
+//		}
+	}
+
+	signing {
+//		required { isReleaseBuild() && gradle.taskGraph.hasTask(":android:publish") }
+//		sign publishing.publications.mavenJava
+	}
+}

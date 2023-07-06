@@ -1,0 +1,34 @@
+#
+# Copyright (C) 2023 Ready.io
+#
+
+[package]
+name = "lib-messaging-jni"
+version = "0.1.0"
+authors = ["Ready.io"]
+edition = "2018"
+license = "AGPL-3.0-only"
+
+[lib]
+name = "messaging_jni"
+crate-type = ["cdylib"]
+
+[features]
+default = ["armv8"]
+armv8 = ["lib-messaging-protocol/armv8", "messaging-crypto/armv8"]
+
+[dependencies]
+lib-messaging-protocol = { path = "../../protocol" }
+messaging-crypto = { path = "../../crypto" }
+# libsignal-bridge = { path = "../shared", features = ["jni", "signal-media"] }
+lib-messaging-bridge = { path = "../shared", features = ["jni"] }
+
+async-trait = "0.1.41"
+cfg-if = "1.0.0"
+jni = "0.19"
+rand = "0.7.3"
+log = "0.4"
+log-panics = { version = "2.1.0", features = ["with-backtrace"] }
+
+[target.aarch64-linux-android.dependencies]
+cpufeatures = "0.2.2" # Make sure 64-bit Android gets optimized crypto

@@ -1,0 +1,26 @@
+#
+# Copyright (C) 2023 Ready.io.
+#
+
+[package]
+name = "lib-messaging-bridge-macros"
+version = "0.1.0"
+authors = ["Ready.io"]
+edition = "2018"
+license = "AGPL-3.0-only"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+heck = "0.3.1"
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "1.0" }
+syn-mid = "0.5"
+unzip3 = "1.0"
+
+[features]
+ffi = []
+jni = []
+node = []

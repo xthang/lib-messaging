@@ -1,0 +1,121 @@
+plugins {
+	id 'java-library'
+	id 'org.jetbrains.kotlin.jvm'
+	id 'maven-publish'
+	id 'signing'
+}
+
+sourceCompatibility = 1.8
+// archivesBaseName = "lib-messaging-client"
+// version          = version_number
+// group            = group_info
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+}
+
+sourceSets {
+	main {
+		java {
+			// Include lib-messaging sources shared between the client and server
+			srcDirs = ['../shared/java']
+		}
+		resources {
+			srcDirs = ['../shared/resources']
+		}
+	}
+}
+
+dependencies {
+	testImplementation 'junit:junit:4.13.2'
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+test {
+	testLogging {
+		events 'passed'
+		showStandardStreams = true
+		showExceptions true
+		exceptionFormat 'full'
+		showCauses true
+		showStackTraces true
+	}
+}
+
+java {
+	targetCompatibility = JavaVersion.VERSION_1_8
+	withSourcesJar()
+	withJavadocJar()
+}
+
+processResources {
+	// TODO: Build a different variant of the JNI library for server.
+//	dependsOn ':makeJniLibrariesDesktop'
+//	dependsOn ':downloadNonLinuxLibraries'
+//	gradle.taskGraph.whenReady { graph ->
+//		if (graph.hasTask(":client:publish")) {
+//			tasks.getByPath(":downloadNonLinuxLibraries").enabled = true
+//		}
+//	}
+}
+
+// MARK: Publishing
+
+publishing {
+	publications {
+//		mavenJava(MavenPublication) {
+//			artifactId = archivesBaseName
+//			from components.java
+//
+//			pom {
+//				name = archivesBaseName
+//				description = 'Ready Protocol cryptography library for Java'
+//				url = 'https://github.com/readyio/lib-messaging'
+//
+//				scm {
+//					url = 'scm:git@github.com:readyio/lib-messaging.git'
+//					connection = 'scm:git@github.com:readyio/lib-messaging.git'
+//					developerConnection = 'scm:git@github.com:readyio/lib-messaging.git'
+//				}
+//
+//				licenses {
+//					license {
+//						name = 'AGPLv3'
+//						url = 'https://www.gnu.org/licenses/agpl-3.0.txt'
+//					}
+//				}
+//
+//				developers {
+//					developer {
+//						name = 'Ready Messenger LLC'
+//					}
+//				}
+//			}
+//		}
+	}
+	repositories {
+//		maven {
+//			url = getReleaseRepositoryUrl()
+//			credentials {
+//				username = getRepositoryUsername()
+//				password = getRepositoryPassword()
+//			}
+//		}
+	}
+}
+
+signing {
+//	required { isReleaseBuild() && gradle.taskGraph.hasTask(":client:publish") }
+//	sign publishing.publications.mavenJava
+}
+compileKotlin {
+	kotlinOptions {
+		jvmTarget = "1.8"
+	}
+}
+compileTestKotlin {
+	kotlinOptions {
+		jvmTarget = "1.8"
+	}
+}

@@ -25,6 +25,7 @@ import { type KeyPairType } from './types'
 
 export * from './Errors'
 export * from './Address'
+export * from './types'
 
 // Native.registerErrors(Errors)
 

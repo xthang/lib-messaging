@@ -7,15 +7,15 @@ Pod::Spec.new do |s|
   s.version          = '0.1.0'
   s.summary          = 'A Swift wrapper library for communicating with the Ready messaging service.'
 
-  s.homepage         = 'https://github.com/xthang/lib-messaging-client'
+  s.homepage         = 'https://github.com/xthang/lib-messaging'
   s.license          = 'AGPL-3.0-only'
   s.author           = 'Ready.io'
-  s.source           = { :git => 'https://github.com/xthang/lib-messaging-client', :tag => "v#{s.version}" }
+  s.source           = { :git => 'https://github.com/xthang/lib-messaging', :tag => "v#{s.version}" }
 
   s.swift_version    = '5'
   s.platform         = :ios, '12.4'
 
-#  s.dependency 'SignalCoreKit'
+  # s.dependency '...'
 
   s.source_files = ['swift/Sources/**/*.swift', 'swift/Sources/**/*.m']
   s.preserve_paths = [
@@ -66,7 +66,7 @@ Pod::Spec.new do |s|
           # Local development
           exit 0
         fi
-        "${PODS_TARGET_SRCROOT}"/bin/fetch_archive.py -u "https://build-artifacts.signal.org/libraries/${LIBSIGNAL_FFI_PREBUILD_ARCHIVE}" -c "${LIB_MESSAGING_FFI_PREBUILD_CHECKSUM}" -o "${USER_LIBRARY_DIR}/Caches/com.cystack.ready.libmessaging"
+        "${PODS_TARGET_SRCROOT}"/bin/fetch_archive.py -u "https://build-artifacts.read.io/libraries/${LIBSIGNAL_FFI_PREBUILD_ARCHIVE}" -c "${LIB_MESSAGING_FFI_PREBUILD_CHECKSUM}" -o "${USER_LIBRARY_DIR}/Caches/com.cystack.ready.libmessaging"
       ),
     },
     { name: 'Extract lib-messaging-ffi prebuild',

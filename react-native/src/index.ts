@@ -818,7 +818,7 @@ export async function processPreKeyBundle(
 }
 
 export async function signalEncrypt(
-  message: Buffer,
+  message: ArrayBuffer,
   address: ProtocolAddress,
   sessionStore: SessionStore,
   identityStore: IdentityKeyStore
@@ -828,7 +828,7 @@ export async function signalEncrypt(
   // )
 
   const sessionCipher = new SessionCipher(sessionStore, identityStore, address)
-  return new CiphertextMessage(await sessionCipher.encrypt(message.buffer))
+  return new CiphertextMessage(await sessionCipher.encrypt(message))
 }
 
 export async function signalDecrypt(
@@ -836,9 +836,9 @@ export async function signalDecrypt(
   address: ProtocolAddress,
   sessionStore: SessionStore,
   identityStore: IdentityKeyStore
-): Promise<Buffer> {
+): Promise<ArrayBuffer> {
   const sessionCipher = new SessionCipher(sessionStore, identityStore, address)
-  return Buffer.from(await sessionCipher.decryptWhisperMessage(message))
+  return await sessionCipher.decryptWhisperMessage(message)
 }
 
 export async function signalDecryptPreKey(
@@ -848,9 +848,8 @@ export async function signalDecryptPreKey(
   identityStore: IdentityKeyStore,
   prekeyStore: PreKeyStore,
   signedPrekeyStore: SignedPreKeyStore
-): Promise<Buffer> {
+): Promise<ArrayBuffer> {
   const sessionCipher = new SessionCipher(sessionStore, identityStore, address)
-  return Buffer.from(
-    await sessionCipher.decryptPreKeyWhisperMessage(prekeyStore, signedPrekeyStore, message)
-  )
+  return await sessionCipher.decryptPreKeyWhisperMessage(prekeyStore, signedPrekeyStore, message)
+  
 }

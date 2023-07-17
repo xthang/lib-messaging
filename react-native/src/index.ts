@@ -46,7 +46,7 @@ export enum Direction {
 export class PublicKey {
   // readonly _nativeHandle: Native.PublicKey
 
-  constructor(readonly value: Buffer) {}
+  constructor(readonly value: Uint8Array) {}
 
   // private constructor(handle: Native.PublicKey) {
   //   this._nativeHandle = handle
@@ -56,7 +56,7 @@ export class PublicKey {
   //   return new PublicKey(handle)
   // }
 
-  static deserialize(buf: Buffer): PublicKey {
+  static deserialize(buf: Uint8Array): PublicKey {
     // return new PublicKey(Native.PublicKey_Deserialize(buf))
     return new PublicKey(buf)
   }
@@ -67,22 +67,22 @@ export class PublicKey {
     // return Native.PublicKey_Compare(this, other)
   }
 
-  serialize(): Buffer {
-    return Buffer.from(this.value)
+  serialize(): Uint8Array {
+    return this.value
     // return Native.PublicKey_Serialize(this)
   }
 
-  getPublicKeyBytes(): Buffer {
+  getPublicKeyBytes(): Uint8Array {
     throw new Error('Pubkey')
     // return Native.PublicKey_GetPublicKeyBytes(this)
   }
 
-  verify(msg: Buffer, sig: Buffer): boolean {
+  verify(msg: Uint8Array, sig: Uint8Array): boolean {
     throw new Error('Pubkey')
     // return Native.PublicKey_Verify(this, msg, sig)
   }
 
-  verifyAlternateIdentity(other: PublicKey, signature: Buffer): boolean {
+  verifyAlternateIdentity(other: PublicKey, signature: Uint8Array): boolean {
     throw new Error('Pubkey')
     // return Native.IdentityKey_VerifyAlternateIdentity(this, other, signature)
   }
@@ -91,7 +91,7 @@ export class PublicKey {
 export class PrivateKey {
   // readonly _nativeHandle: Native.PrivateKey
 
-  private constructor(readonly value: Buffer, private readonly publicKey: Buffer) {}
+  private constructor(readonly value: Uint8Array, private readonly publicKey: Uint8Array) {}
   // private constructor(handle: Native.PrivateKey) {
   //   this._nativeHandle = handle
   // }
@@ -102,25 +102,25 @@ export class PrivateKey {
 
   static generate(): PrivateKey {
     const raw_keys = generateKeyPair(randomBytes(32))
-    return new PrivateKey(Buffer.from(raw_keys.private), Buffer.from(raw_keys.public)) // Native.PrivateKey_Generate())
+    return new PrivateKey(raw_keys.private, raw_keys.public) // Native.PrivateKey_Generate())
   }
 
-  static deserialize(buf: Buffer): PrivateKey {
+  static deserialize(buf: Uint8Array): PrivateKey {
     const raw_keys = generateKeyPair(buf)
-    return new PrivateKey(Buffer.from(raw_keys.private), Buffer.from(raw_keys.public)) // Native.PrivateKey_Deserialize(buf))
+    return new PrivateKey(raw_keys.private, raw_keys.public) // Native.PrivateKey_Deserialize(buf))
   }
 
-  serialize(): Buffer {
-    return Buffer.from(this.value)
+  serialize(): Uint8Array {
+    return this.value
     // return Native.PrivateKey_Serialize(this)
   }
 
-  sign(msg: Buffer): Buffer {
-    return Buffer.from(sign(this.value, msg, new Uint8Array(randomBytes(64))))
+  sign(msg: Uint8Array): Uint8Array {
+    return sign(this.value, msg, new Uint8Array(randomBytes(64)))
     // return Native.PrivateKey_Sign(this, msg)
   }
 
-  agree(other_key: PublicKey): Buffer {
+  agree(other_key: PublicKey): Uint8Array {
     throw new Error('////')
     // return Native.PrivateKey_Agree(this, other_key)
   }
@@ -145,7 +145,7 @@ export class IdentityKeyPair {
     return new IdentityKeyPair(privateKey.getPublicKey(), privateKey)
   }
 
-  static deserialize(buffer: Buffer): IdentityKeyPair {
+  static deserialize(buffer: Uint8Array): IdentityKeyPair {
     throw new Error('.....deserialize.')
     // const { privateKey, publicKey } = Native.IdentityKeyPair_Deserialize(buffer)
     // return new IdentityKeyPair(
@@ -154,12 +154,12 @@ export class IdentityKeyPair {
     // )
   }
 
-  serialize(): Buffer {
+  serialize(): Uint8Array {
     throw new Error('.....serialize.')
     // return Native.IdentityKeyPair_Serialize(this.publicKey, this.privateKey)
   }
 
-  signAlternateIdentity(other: PublicKey): Buffer {
+  signAlternateIdentity(other: PublicKey): Uint8Array {
     throw new Error('......signAlternateIdentity')
     // return Native.IdentityKeyPair_SignAlternateIdentity(this.publicKey, this.privateKey, other)
   }
@@ -179,7 +179,7 @@ export class PreKeyBundle {
     private prekey: PublicKey | null,
     private signed_prekey_id: number,
     private signed_prekey: PublicKey,
-    private signed_prekey_signature: Buffer,
+    private signed_prekey_signature: Uint8Array,
     private identity_key: PublicKey
   ) {}
 
@@ -190,7 +190,7 @@ export class PreKeyBundle {
     prekey: PublicKey | null,
     signed_prekey_id: number,
     signed_prekey: PublicKey,
-    signed_prekey_signature: Buffer,
+    signed_prekey_signature: Uint8Array,
     identity_key: PublicKey
   ): PreKeyBundle {
     return new PreKeyBundle(
@@ -248,7 +248,7 @@ export class PreKeyBundle {
     return this.signed_prekey
   }
 
-  signedPreKeySignature(): Buffer {
+  signedPreKeySignature(): Uint8Array {
     // return Native.PreKeyBundle_GetSignedPreKeySignature(this)
     return this.signed_prekey_signature
   }
@@ -276,7 +276,7 @@ export class PreKeyRecord {
     return new PreKeyRecord(id, pubKey, privKey)
   }
 
-  static deserialize(buffer: Buffer): PreKeyRecord {
+  static deserialize(buffer: Uint8Array): PreKeyRecord {
     throw new Error('......PreKeyRecord,deserialize')
     // return new PreKeyRecord(Native.PreKeyRecord_Deserialize(buffer))
   }
@@ -296,7 +296,7 @@ export class PreKeyRecord {
     return this._pubKey
   }
 
-  serialize(): Buffer {
+  serialize(): Uint8Array {
     throw new Error('......PreKeyRecord')
     // return Native.PreKeyRecord_Serialize(this)
   }
@@ -314,7 +314,7 @@ export class SignedPreKeyRecord {
     private _timestamp: number,
     private _pubKey: PublicKey,
     private _privKey: PrivateKey,
-    private _signature: Buffer
+    private _signature: Uint8Array
   ) {}
 
   // static _fromNativeHandle(nativeHandle: Native.SignedPreKeyRecord): SignedPreKeyRecord {
@@ -326,7 +326,7 @@ export class SignedPreKeyRecord {
     timestamp: number,
     pubKey: PublicKey,
     privKey: PrivateKey,
-    signature: Buffer
+    signature: Uint8Array
   ): SignedPreKeyRecord {
     // return new SignedPreKeyRecord(
     //   Native.SignedPreKeyRecord_New(id, timestamp, pubKey, privKey, signature)
@@ -334,12 +334,12 @@ export class SignedPreKeyRecord {
     return new SignedPreKeyRecord(id, timestamp, pubKey, privKey, signature)
   }
 
-  static deserialize(buffer: Buffer): SignedPreKeyRecord {
+  static deserialize(buffer: Uint8Array): SignedPreKeyRecord {
     throw new Error('......SignedPreKeyRecord')
     // return new SignedPreKeyRecord(Native.SignedPreKeyRecord_Deserialize(buffer))
   }
 
-  serialize(): Buffer {
+  serialize(): Uint8Array {
     throw new Error('......SignedPreKeyRecord')
     // return Native.SignedPreKeyRecord_Serialize(this)
   }
@@ -359,7 +359,7 @@ export class SignedPreKeyRecord {
     return this._pubKey
   }
 
-  signature(): Buffer {
+  signature(): Uint8Array {
     // return Native.SignedPreKeyRecord_GetSignature(this)
     return this._signature
   }
@@ -372,14 +372,14 @@ export class SignedPreKeyRecord {
 
 export class SignalMessage {
   private _messageVersion: number
-  public messageProto: Buffer
-  public macKey: Buffer
+  public messageProto: Uint8Array
+  public macKey: Uint8Array
   readonly _nativeHandle: WhisperMessage // Native.SignalMessage
 
   private constructor(
     messageVersion: number,
-    messageProto: Buffer,
-    macKey: Buffer,
+    messageProto: Uint8Array,
+    macKey: Uint8Array,
     handle: WhisperMessage // Native.SignalMessage
   ) {
     if ((messageVersion & 0xf) > 3 || messageVersion >> 4 < 3) {
@@ -395,11 +395,11 @@ export class SignalMessage {
 
   static _new(
     messageVersion: number,
-    macKey: Buffer,
+    macKey: Uint8Array,
     senderRatchetKey: PublicKey,
     counter: number,
     previousCounter: number,
-    ciphertext: Buffer,
+    ciphertext: Uint8Array,
     senderIdentityKey: PublicKey,
     receiverIdentityKey: PublicKey
   ): SignalMessage {
@@ -418,17 +418,17 @@ export class SignalMessage {
     // )
   }
 
-  static deserialize(buffer: Buffer): SignalMessage {
+  static deserialize(buffer: Uint8Array): SignalMessage {
     // return new SignalMessage(Native.SignalMessage_Deserialize(buffer))
 
-    const version = new Uint8Array(buffer)[0]!
+    const version = buffer[0]!
     const messageProto = buffer.slice(1, buffer.byteLength - 8)
     const mac = buffer.slice(buffer.byteLength - 8, buffer.byteLength)
 
     return new SignalMessage(version, messageProto, mac, WhisperMessage.decode(messageProto))
   }
 
-  body(): Buffer {
+  body(): Uint8Array {
     throw new Error('......SignalMessage')
     // return Native.SignalMessage_GetBody(this)
   }
@@ -443,7 +443,7 @@ export class SignalMessage {
     // return Native.SignalMessage_GetMessageVersion(this)
   }
 
-  serialize(): Buffer {
+  serialize(): Uint8Array {
     throw new Error('......SignalMessage')
     // return Native.SignalMessage_GetSerialized(this)
   }
@@ -451,7 +451,7 @@ export class SignalMessage {
   verifyMac(
     senderIdentityKey: PublicKey,
     receivierIdentityKey: PublicKey,
-    macKey: Buffer
+    macKey: Uint8Array
   ): boolean {
     throw new Error('......SignalMessage')
     // return Native.SignalMessage_VerifyMac(this, senderIdentityKey, recevierIdentityKey, macKey)
@@ -473,7 +473,7 @@ export class PreKeySignalMessage {
     }
 
     this._messageVersion = messageVersion
-    this.signalMessage = SignalMessage.deserialize(Buffer.from(handle.message))
+    this.signalMessage = SignalMessage.deserialize(handle.message)
     this._nativeHandle = handle
   }
 
@@ -500,10 +500,10 @@ export class PreKeySignalMessage {
     //   )
   }
 
-  static deserialize(buffer: Buffer): PreKeySignalMessage {
+  static deserialize(buffer: Uint8Array): PreKeySignalMessage {
     // return new PreKeySignalMessage(Native.PreKeySignalMessage_Deserialize(buffer))
 
-    const view = new Uint8Array(buffer)
+    const view = buffer
     const version = view[0]!
     const messageData = view.slice(1)
 
@@ -530,7 +530,7 @@ export class PreKeySignalMessage {
     // return Native.PreKeySignalMessage_GetVersion(this)
   }
 
-  serialize(): Buffer {
+  serialize(): Uint8Array {
     throw new Error('......PreKeySignalMessage')
     // return Native.PreKeySignalMessage_Serialize(this)
   }
@@ -608,11 +608,11 @@ export abstract class IdentityKeyStore {
 
   abstract getLocalRegistrationId(): Promise<number>
 
-  abstract saveIdentity(name: ProtocolAddress, key: PublicKey | Buffer): Promise<boolean>
+  abstract saveIdentity(name: ProtocolAddress, key: PublicKey | Uint8Array): Promise<boolean>
 
   abstract isTrustedIdentity(
     name: ProtocolAddress,
-    key: PublicKey | Buffer,
+    key: PublicKey | Uint8Array,
     direction: Direction
   ): Promise<boolean>
 
@@ -680,7 +680,7 @@ export class CiphertextMessage {
 
   serialize(): Buffer {
     // return Native.CiphertextMessage_Serialize(this)
-    return Buffer.from(this.message.body)
+    return Buffer.from(this.message.body!)
   }
 
   type(): number {
@@ -696,7 +696,7 @@ export class PlaintextContent implements CiphertextMessageConvertible {
   //   this._nativeHandle = nativeHandle
   // }
 
-  static deserialize(buffer: Buffer): PlaintextContent {
+  static deserialize(buffer: Uint8Array): PlaintextContent {
     throw new Error('......')
     // return new PlaintextContent(Native.PlaintextContent_Deserialize(buffer))
   }
@@ -706,12 +706,12 @@ export class PlaintextContent implements CiphertextMessageConvertible {
     // return new PlaintextContent(Native.PlaintextContent_FromDecryptionErrorMessage(message))
   }
 
-  serialize(): Buffer {
+  serialize(): Uint8Array {
     throw new Error('......')
     // return Native.PlaintextContent_Serialize(this)
   }
 
-  body(): Buffer {
+  body(): Uint8Array {
     throw new Error('......')
     // return Native.PlaintextContent_GetBody(this)
   }
@@ -734,7 +734,7 @@ export class DecryptionErrorMessage {
   // }
 
   static forOriginal(
-    bytes: Buffer,
+    bytes: Uint8Array,
     type: CiphertextMessageType,
     timestamp: number,
     originalSenderDeviceId: number
@@ -750,19 +750,19 @@ export class DecryptionErrorMessage {
     //   )
   }
 
-  static deserialize(buffer: Buffer): DecryptionErrorMessage {
+  static deserialize(buffer: Uint8Array): DecryptionErrorMessage {
     throw new Error('......')
     // return new DecryptionErrorMessage(Native.DecryptionErrorMessage_Deserialize(buffer))
   }
 
-  static extractFromSerializedBody(buffer: Buffer): DecryptionErrorMessage {
+  static extractFromSerializedBody(buffer: Uint8Array): DecryptionErrorMessage {
     throw new Error('......')
     // return new DecryptionErrorMessage(
     //     Native.DecryptionErrorMessage_ExtractFromSerializedContent(buffer)
     //   )
   }
 
-  serialize(): Buffer {
+  serialize(): Uint8Array {
     throw new Error('......')
     // return Native.DecryptionErrorMessage_Serialize(this)
   }

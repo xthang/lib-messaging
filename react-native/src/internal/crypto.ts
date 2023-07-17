@@ -97,7 +97,7 @@ export async function sign(key: ArrayBuffer, data: ArrayBuffer): Promise<ArrayBu
   // }
 
   // TODO: fix `.update(data)`. The arg type is incorrect. And it generates the same hmac as when we call `.update(new ArrayBuffer(0))`
-  const mac = cryptoMobile.createHmac('sha256', util.fromBufferToB64(key)).update(data).digest()
+  const mac = cryptoMobile.createHmac('sha256', util.fromBufferToB64(key)).update(new Uint8Array(data)).digest()
   // const mac = await MessagingProtocolModule.computeMac(
   //   Array.from(new TextEncoder().encode(Utils.fromBufferToB64(key))),
   //   arrayBufferToArray(data)
